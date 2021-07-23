@@ -1,0 +1,11 @@
+{
+  "name" : "kanban-scrum-update",
+  "title" : "Kanban Scrum Update",
+  "description" : null,
+  "dependencies" : {
+    "@jetbrains/youtrack-scripting-api" : "^2021.3.21051"
+  },
+  "youtrack" : {
+    "autoAttached" : false
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "devDependencies": {
+    "@jetbrains/youtrack-scripting": "^0.0.24",
+    "@jetbrains/youtrack-scripting-api": "^2021.3.21558",
+    "cross-env": "^7.0.3"
+  },
+  "name": "youtrack-custom-workflows",
+  "description": "This is where the code for the custom workflows is stored. You'll need to do some setup on your side, so follow their [working with custom commands](https://www.jetbrains.com/help/youtrack/devportal/youtrack-workflow-reference.html) tutorial.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "cross-spawn": "^7.0.3",
+    "isexe": "^2.0.0",
+    "path-key": "^3.1.1",
+    "shebang-command": "^2.0.0",
+    "shebang-regex": "^3.0.0",
+    "which": "^2.0.2"
+  },
+  "scripts": {
+    "list-prod": "cross-env youtrack-workflow list --host=$npm_config_host_prod --token=$npm_config_token_prod",
+    "download-prod": "cross-env youtrack-workflow download --host=$npm_config_host_prod --token=$npm_config_token_prod",
+    "upload-prod": "cross-env youtrack-workflow upload --host=$npm_config_host_prod --token=$npm_config_token_prod"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@code.openhmisafrica.org:bhgo/youtrack-custom-workflows.git"
+  },
+  "author": "",
+  "license": "ISC"
+}
