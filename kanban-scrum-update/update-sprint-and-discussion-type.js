@@ -55,7 +55,7 @@ exports.rule = entities.Issue.onChange({
 		// 3. The state changes to "done"
 		return (
 			ctx.issue.fields.isChanged(ctx.DiscussionType.name) ||
-			(ctx.issue.fields.isChanged(ctx.Sprint.name) && ctx.issue.fields.Type !== ctx.Type.bug) ||
+			(ctx.issue.fields.isChanged(ctx.Sprint.name) && ctx.issue.fields.Type !== ctx.Type.bug.name) ||
 			(ctx.issue.fields.isChanged(ctx.State.name) && ctx.issue.fields.State.name === ctx.State.done.name)
 		);
 	},
@@ -68,12 +68,12 @@ exports.rule = entities.Issue.onChange({
 			// Since the discussion type changed, we're going to clear all sprint assignments
 			const issueCurrentSprintName = issueFields.Sprint?.name;
 
-			if (issueFields.DiscussionType.name === ctx.DiscussionType.thisSprint.name && currentSprint) {
+			if (issueFields.DiscussionType?.name === ctx.DiscussionType.thisSprint.name && currentSprint) {
 				if (issueCurrentSprintName !== currentSprint.name) {
 					// The current sprint needs to be assigned because that's what the discussion type was changed to
 					ctx.issue.applyCommand(`Board ${bandaHealthBoardName} ${currentSprint.name}`);
 				}
-			} else if (issueFields.DiscussionType.name === ctx.DiscussionType.nextSprint.name && nextSprint) {
+			} else if (issueFields.DiscussionType?.name === ctx.DiscussionType.nextSprint.name && nextSprint) {
 				if (issueCurrentSprintName !== nextSprint.name) {
 					// The next sprint needs to be assigned because that's what the discussion type was changed to
 					ctx.issue.applyCommand(`Board ${bandaHealthBoardName} ${nextSprint.name}`);
@@ -81,15 +81,15 @@ exports.rule = entities.Issue.onChange({
 			} else {
 				issueFields.Sprint = null;
 			}
-		} else if (issueFields.isChanged(ctx.Sprint.name)) {
+		} else if (issueFields.isChanged(ctx.Sprint.name) && issueFields.Type !== ctx.Type.bug.name) {
 			// Since the sprint changed, we need to update the discussion type value (potentially)
 			if (currentSprint && issueFields.Sprint.name === currentSprint.name) {
-				if (issueFields.DiscussionType.name !== ctx.DiscussionType.thisSprint.name) {
+				if (issueFields.DiscussionType?.name !== ctx.DiscussionType.thisSprint.name) {
 					// Since the issue was added to the current sprint, assign the correct discussion type
 					issueFields.DiscussionType = ctx.DiscussionType.thisSprint;
 				}
 			} else if (nextSprint && issueFields.Sprint.name === nextSprint.name) {
-				if (issueFields.DiscussionType.name !== ctx.DiscussionType.nextSprint.name) {
+				if (issueFields.DiscussionType?.name !== ctx.DiscussionType.nextSprint.name) {
 					// The sprint was assigned to the next sprint, so add it to the correct discussion type
 					issueFields.DiscussionType = ctx.DiscussionType.nextSprint;
 				}
@@ -97,6 +97,8 @@ exports.rule = entities.Issue.onChange({
 				// Otherwise, just put the issue in the "later" column
 				issueFields.DiscussionType = ctx.DiscussionType.later;
 			}
+		} else if (issueFields.isChanged(ctx.State.name) && issueFields.State?.name === ctx.State.done.name) {
+			issueFields.DiscussionType = ctx.DiscussionType.done;
 		}
 	},
 	requirements: {
