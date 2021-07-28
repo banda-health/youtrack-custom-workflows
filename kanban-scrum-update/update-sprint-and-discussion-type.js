@@ -56,18 +56,18 @@ exports.rule = entities.Issue.onChange({
 		return (
 			ctx.issue.fields.isChanged(ctx.DiscussionType.name) ||
 			(ctx.issue.fields.isChanged(ctx.Sprint.name) && ctx.issue.fields.Type !== ctx.Type.bug.name) ||
-			(ctx.issue.fields.isChanged(ctx.State.name) && ctx.issue.fields.State.name === ctx.State.done.name)
+			(ctx.issue.fields.isChanged(ctx.State.name) && ctx.issue.fields.State?.name === ctx.State.done.name)
 		);
 	},
 	action: (ctx) => {
 		const issueFields = ctx.issue.fields;
 		const { currentSprint, nextSprint } = getSprints();
+		
+		const issueCurrentSprintName = issueFields.Sprint?.name;
 
 		// If the discussion type changed, we need to update the sprint
 		if (issueFields.isChanged(ctx.DiscussionType.name)) {
 			// Since the discussion type changed, we're going to clear all sprint assignments
-			const issueCurrentSprintName = issueFields.Sprint?.name;
-
 			if (issueFields.DiscussionType?.name === ctx.DiscussionType.thisSprint.name && currentSprint) {
 				if (issueCurrentSprintName !== currentSprint.name) {
 					// The current sprint needs to be assigned because that's what the discussion type was changed to
@@ -83,12 +83,12 @@ exports.rule = entities.Issue.onChange({
 			}
 		} else if (issueFields.isChanged(ctx.Sprint.name) && issueFields.Type !== ctx.Type.bug.name) {
 			// Since the sprint changed, we need to update the discussion type value (potentially)
-			if (currentSprint && issueFields.Sprint.name === currentSprint.name) {
+			if (currentSprint && issueCurrentSprintName === currentSprint.name) {
 				if (issueFields.DiscussionType?.name !== ctx.DiscussionType.thisSprint.name) {
 					// Since the issue was added to the current sprint, assign the correct discussion type
 					issueFields.DiscussionType = ctx.DiscussionType.thisSprint;
 				}
-			} else if (nextSprint && issueFields.Sprint.name === nextSprint.name) {
+			} else if (nextSprint && issueCurrentSprintName === nextSprint.name) {
 				if (issueFields.DiscussionType?.name !== ctx.DiscussionType.nextSprint.name) {
 					// The sprint was assigned to the next sprint, so add it to the correct discussion type
 					issueFields.DiscussionType = ctx.DiscussionType.nextSprint;
