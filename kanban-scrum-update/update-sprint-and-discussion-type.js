@@ -29,7 +29,7 @@ const getSprints = () => {
 	let currentSprint, nextSprint;
 	// If we have sprints, we'll figure this out
 	if (sprints.length) {
-		const today = new Date();
+		const today = new Date().getTime();
 
 		// Find the index of the first sprint that starts after today
 		const nextSprintIndex = sprints.findIndex((sprint) => sprint.start > today);
@@ -67,7 +67,7 @@ exports.rule = entities.Issue.onChange({
 
 		// If the discussion type changed, we need to update the sprint
 		if (issueFields.isChanged(ctx.DiscussionType.name)) {
-			// Since the discussion type changed, we're going to clear all sprint assignments
+			// Since the discussion type changed, make sure the sprint is set correctly
 			if (issueFields.DiscussionType?.name === ctx.DiscussionType.thisSprint.name && currentSprint) {
 				if (issueCurrentSprintName !== currentSprint.name) {
 					// The current sprint needs to be assigned because that's what the discussion type was changed to
@@ -78,7 +78,7 @@ exports.rule = entities.Issue.onChange({
 					// The next sprint needs to be assigned because that's what the discussion type was changed to
 					ctx.issue.applyCommand(`Board ${bandaHealthBoardName} ${nextSprint.name}`);
 				}
-			} else {
+			} else if (issueFields.DiscussionType?.name !== ctx.DiscussionType.done.name) {
 				issueFields.Sprint = null;
 			}
 		} else if (issueFields.isChanged(ctx.Sprint.name) && issueFields.Type !== ctx.Type.bug.name) {

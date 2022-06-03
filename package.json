@@ -1,7 +1,7 @@
 {
   "devDependencies": {
-    "@jetbrains/youtrack-scripting": "^0.0.24",
-    "@jetbrains/youtrack-scripting-api": "^2021.3.21558",
+    "@jetbrains/youtrack-scripting": "^0.0.25",
+    "@jetbrains/youtrack-scripting-api": "^2021.3.26792",
     "cross-env": "^7.0.3"
   },
   "name": "youtrack-custom-workflows",
@@ -11,9 +11,9 @@
   "dependencies": {
     "cross-spawn": "^7.0.3",
     "isexe": "^2.0.0",
-    "path-key": "^3.1.1",
+    "path-key": "^4.0.0",
     "shebang-command": "^2.0.0",
-    "shebang-regex": "^3.0.0",
+    "shebang-regex": "^4.0.0",
     "which": "^2.0.2"
   },
   "scripts": {
